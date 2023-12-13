@@ -3,6 +3,7 @@ import Providers from '@/components/Providers';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Toaster } from 'sonner';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -31,6 +32,7 @@ export default function RootLayout({
 						<div className="flex-grow flex-1">{children}</div>
 					</Providers>
 				</main>
+				<Toaster position="top-center" richColors />
 			</body>
 		</html>
 	);
