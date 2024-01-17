@@ -5,6 +5,7 @@ import { cn, formatPrice } from '@/lib/utils';
 import { Product } from '@/payload-types';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
+import ImageSlider from './ImageSlider';
 import { Skeleton } from './ui/skeleton';
 
 interface ProductListingProps {
@@ -29,6 +30,10 @@ const ProductListing: FC<ProductListingProps> = ({ index, product }) => {
 		({ value }) => value === product.category
 	)?.label;
 
+	const validUrls = product.images
+		.map(({ image }) => (typeof image === 'string' ? image : image.url))
+		.filter(Boolean) as string[];
+
 	if (isVisible && product) {
 		return (
 			<Link
@@ -39,12 +44,13 @@ const ProductListing: FC<ProductListingProps> = ({ index, product }) => {
 				)}
 			>
 				<div className="flex flex-col w-full">
-					<h1
+					<ImageSlider urls={validUrls} />
+					<h3
 						className="mt-4 font-medium
 						text-sm text-gray-700"
 					>
 						{product.name}
-					</h1>
+					</h3>
 					<p
 						className="mt-1 text-sm
 						text-gray-500"
