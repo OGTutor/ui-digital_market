@@ -93,7 +93,7 @@ const ProductReel: FC<ProductReelProps> = ({
 							<ProductListing
 								product={product}
 								index={idx}
-								key={idx}
+								key={`product-${idx}`}
 							/>
 						))}
 					</div>
