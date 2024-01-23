@@ -19,6 +19,8 @@ import {
 	SheetTrigger,
 } from './ui/sheet';
 
+const FEE = 1;
+
 const Cart: FC = () => {
 	const { items } = useCart();
 	const itemCount = items.length;
@@ -33,8 +35,6 @@ const Cart: FC = () => {
 		(total, { product }) => total + product.price,
 		0
 	);
-
-	const fee = 1;
 
 	return (
 		<Sheet>
@@ -78,11 +78,11 @@ const Cart: FC = () => {
 									<span className="flex-1">
 										Transaction Fee
 									</span>
-									<span>{formatPrice(fee)}</span>
+									<span>{formatPrice(FEE)}</span>
 								</div>
 								<div className="flex">
 									<span className="flex-1">Total</span>
-									<span>{formatPrice(cartTotal + fee)}</span>
+									<span>{formatPrice(cartTotal + FEE)}</span>
 								</div>
 							</div>
 							<SheetFooter>

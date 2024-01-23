@@ -4,13 +4,28 @@ import { Button } from '@/components/ui/button';
 import { PRODUCT_CATEGORIES } from '@/config';
 import { useCart } from '@/hooks/use-cart';
 import { cn, formatPrice } from '@/lib/utils';
+import { trpc } from '@/trpc/client';
 import { Check, Loader2, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
+
+const FEE = 1;
 
 const Page: FC = () => {
 	const { items, removeItem } = useCart();
+
+	const router = useRouter();
+
+	const { mutate: createCheckoutSession, isLoading } =
+		trpc.payment.createSession.useMutation({
+			onSuccess: ({ url }) => {
+				if (url) router.push(url);
+			},
+		});
+
+	const productIds = items.map(({ product }) => product.id);
 
 	const [isMounted, setIsMounted] = useState<boolean>(false);
 
@@ -22,8 +37,6 @@ const Page: FC = () => {
 		(total, { product }) => total + product.price,
 		0
 	);
-
-	const fee = 1;
 
 	return (
 		<div className="bg-white">
@@ -258,7 +271,7 @@ const Page: FC = () => {
 									text-gray-900"
 								>
 									{isMounted ? (
-										formatPrice(fee)
+										formatPrice(FEE)
 									) : (
 										<Loader2
 											className="h-4 w-4
@@ -284,7 +297,7 @@ const Page: FC = () => {
 									font-medium text-gray-900"
 								>
 									{isMounted ? (
-										formatPrice(cartTotal + fee)
+										formatPrice(cartTotal + FEE)
 									) : (
 										<Loader2
 											className="h-4 w-4
@@ -296,7 +309,23 @@ const Page: FC = () => {
 							</div>
 						</div>
 						<div className="mt-6">
-							<Button className="w-full" size="lg">
+							<Button
+								disabled={
+									!isMounted ||
+									items.length === 0 ||
+									isLoading
+								}
+								onClick={() =>
+									createCheckoutSession({ productIds })
+								}
+								className="w-full"
+								size="lg"
+							>
+								{!isMounted ||
+								items.length === 0 ||
+								isLoading ? (
+									<Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+								) : null}
 								Checkout
 							</Button>
 						</div>
